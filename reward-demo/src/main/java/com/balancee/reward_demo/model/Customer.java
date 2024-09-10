@@ -1,7 +1,11 @@
 package com.balancee.reward_demo.model;
 
 import jakarta.persistence.*;
-import java.util.List;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "customers")
@@ -11,21 +15,30 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "name", nullable = false, length = 100)
+    @NotBlank(message = "Name is mandatory")
+    private String name;
+
+    @Column(name = "email", nullable = false, unique = true)
+    @Email(message = "Email should be valid")
+    private String email;
+
+    @Column(name = "created_at", nullable = false)
+    @NotNull(message = "Created at is mandatory")
+    private LocalDateTime createdAt;
+
     @Column(name = "total_cashback", nullable = false)
+    @NotNull(message = "Total cashback is mandatory")
     private double totalCashback;
-
-    @Column(name = "current_balance", nullable = false)
-    private double currentBalance;
-
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<CashbackHistory> cashbackHistories;
 
     public Customer() {
     }
 
-    public Customer(double totalCashback, double currentBalance) {
+    public Customer(String name, String email, LocalDateTime createdAt, double totalCashback) {
+        this.name = name;
+        this.email = email;
+        this.createdAt = createdAt;
         this.totalCashback = totalCashback;
-        this.currentBalance = currentBalance;
     }
 
     public Long getId() {
@@ -36,6 +49,30 @@ public class Customer {
         this.id = id;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public double getTotalCashback() {
         return totalCashback;
     }
@@ -44,20 +81,14 @@ public class Customer {
         this.totalCashback = totalCashback;
     }
 
-    public double getCurrentBalance() {
-        return currentBalance;
-    }
-
-    public void setCurrentBalance(double currentBalance) {
-        this.currentBalance = currentBalance;
-    }
-
-    public List<CashbackHistory> getCashbackHistories() {
-        return cashbackHistories;
-    }
-
-    public void setCashbackHistories(List<CashbackHistory> cashbackHistories) {
-        this.cashbackHistories = cashbackHistories;
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", createdAt=" + createdAt +
+                ", totalCashback=" + totalCashback +
+                '}';
     }
 }
-

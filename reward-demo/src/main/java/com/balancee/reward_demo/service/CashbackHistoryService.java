@@ -15,4 +15,18 @@ public class CashbackHistoryService {
     public List<CashbackHistory> getHistoryByCustomerId(Long customerId) {
         return cashbackHistoryRepository.findByCustomerId(customerId);
     }
+
+    public double getUsedCashback(Long customerId) {
+        List<CashbackHistory> history = cashbackHistoryRepository.findByCustomerId(customerId);
+        if (history == null || history.isEmpty()) {
+            return 0.0;
+        }
+        return history.stream()
+                .mapToDouble(CashbackHistory::getAmountEarned)
+                .sum();
+    }
+
+    public CashbackHistory addCashbackTransaction(CashbackHistory cashbackHistory) {
+        return cashbackHistoryRepository.save(cashbackHistory);
+    }
 }
